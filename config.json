@@ -1,0 +1,10 @@
+{
+	"token": "374964517:AAEMmpcCPpGFIniZ-y_hrmacD94Yp472Qj8",
+	"polling": {
+		"interval": 1000,
+		"timeout": 0,
+		"limit": 100,
+		"retryTimeout": 5000
+	},
+	"allowedUpdates": []
+}
