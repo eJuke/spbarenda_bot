@@ -1,10 +1,18 @@
 {
-	"token": "374964517:AAEMmpcCPpGFIniZ-y_hrmacD94Yp472Qj8",
-	"polling": {
-		"interval": 1000,
-		"timeout": 0,
-		"limit": 100,
-		"retryTimeout": 5000
+	"telebot" : {
+		"token": "374964517:AAEMmpcCPpGFIniZ-y_hrmacD94Yp472Qj8",
+		"polling": {
+			"interval": 500,
+			"timeout": 0,
+			"limit": 100,
+			"retryTimeout": 5000
+		},
+		"allowedUpdates": []
 	},
-	"allowedUpdates": []
+	"sql" : {
+		"host": "eu-cdbr-west-01.cleardb.com",
+		"user": "bd3760888b04b1",
+		"password": "d6fc5db5",
+		"database": "heroku_5926eaef4c85ec1"
+	}
 }

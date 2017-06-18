@@ -1,95 +1,109 @@
+let messages = {
+    'options': [
+        {
+            text: 'Выбрать количество комнат',
+            state: 'options/select'
+        },
+        {
+            text: 'Ввести минимальную цену',
+            state: 'options/minprice'
+        },
+        {
+            text: 'Ввести максимальную цену',
+            state: 'options/maxprice'
+        },
+        {
+            text: 'Наличие фотографий у объявлений',
+            state: 'options/photo'
+        },
+        {
+            text: 'Завершить настройку',
+            state: 'default'
+        }
+    ],
+    'options/select': [
+        {
+            text: '<- Назад',
+            state: 'options'
+        },
+        {
+            text: 'Студия',
+            state: 'options/select'
+        },
+        {
+            text: '1-к. квартира',
+            state: 'options/select'
+        },
+        {
+            text: '2-к. квартира',
+            state: 'options/select'
+        },
+        {
+            text: '3-к. квартира',
+            state: 'options/select'
+        },
+        {
+            text: '4-к. квартира',
+            state: 'options/select'
+        }
+    ]
+}
+
 let options = {
-	config: {
-		type: {
-			'Студия' : 0,
-			'1-к. квартира': 1,
-			'2-к. квартира': 2,
-			'3-к. квартира': 3,
-			'4-к. квартира': 4
-		}
-	},
-	showOptions: function(app, ctx){
-		switch (app.state) {
-			// Вызов опций на экран
-			case 'options':
-				let keyboard = app.keyboard(
-					[
-						['Выбрать количество комнат'],
-						['Ввести минимальную цену'],
-						['Ввести максимальную цену'],
-						['Выводить только с фотографиями?'],
-						['Завершить настройку']
-					],
-					{once: true}
-				);
-				app.sendMessage(ctx.from.id, 'Выберите необходимый параметр', {markup: keyboard})
-				app.state = 'options/select';
-				break;
+    options: {},
+    optionExample: {
+        type0: false,
+        type1: false,
+        type2: false,
+        type3: false,
+        type4: false,
+        maxPrice: 0,
+        minPrice: 0,
+        photo: false,
+        broadcast: false
+    },
+    request: undefined,
+    setRequest(request) {
+        this.request = request;
+    },
+    showOptions: function(app, ctx){
 
-			// Общий обработчик для опций
-			case 'options/select':
-				switch(ctx.text){
-					case 'Выбрать количество комнат':
-						let keyboard = app.keyboard(
-							[
-								[['<- Назад'],['Студия']],
-								[['1-к. квартира'],['2-к. квартира']],
-								[['3-к. квартира'],['4-к. квартира']]
-							],
-							{resize: true, once: false}
-						);
-						app.sendMessage(ctx.from.id, 'Выберите одно или несколько значений', {markup: keyboard});
-						app.state = 'options/type';
-						break;
-
-					case 'Ввести минимальную цену':
-						app.state = 'options/minprice';
-						app.reply.text('Введите минимальную цену:')ж
-						break;
-
-					case 'Ввести максимальную цену':
-						app.state = 'options/maxprice';
-						app.reply.text('Введите максимальную цену:')ж
-						break;
-
-					case 'Выводить только с фотографиями?':
-						let keyboard = app.keyboard(
-							[
-								[['Все'],['Только с фото']],
-							],
-							{resize: true, once: true}
-						);
-						app.state = 'options/photo';
-						app.sendMessage(ctx.from.id, 'Какие объявления выводить?', {markup: keyboard});
-						break;
-
-					case 'Завершить настройку':
-						app.state = '';
-						break;
-
-					default:
-						app.reply.text('Выберите команду на клавиатуре');
-						break;
-				}
-				break;
-
-			// Выбор типа квартиры
-			case 'options/type':
-				break;
-
-			// Ввод максимальной цены
-			case 'options/maxprice':
-				break;
-
-			// Ввод минимальной цены
-			case 'options/minprice':
-				break;
-			
-			// Выбор показа фотографий
-			case 'options/photo':
-				break;
-		}
-	},
+    },
+    setOption(id, optName, optValue) {
+        return new Promise((resolve, reject) => {
+            this.request.updateUserConfig(id, optName, optValue)
+                .then(res => {
+                    this.options[id][optName] = optValue;
+                    resolve(this.options[id]);
+                })
+                .catch(() => {reject()});
+        })
+    },
+    getUserOptions(id) {
+        return new Promise((resolve, reject) => {
+            if (this.options[id] == undefined) reject();
+            else resolve(this.options[id]);
+        });
+    },
+    createUserOptions(id) {
+        return new Promise((resolve, reject) => {
+            this.request.createUserConfig(id)
+                .then(() => {
+                    this.options[id] = this.optionExample;
+                    resolve(this.options[id]);
+                })
+                .catch(err => {reject(err)});
+        })
+    },
+    loadOptions: function() {
+        return this.request.getUserConfigs()
+            .then(result => {
+                result.forEach((item, i) => {
+                    this.options[item.id] = item;
+                });
+            })
+            .catch(() => {});
+    }
 }
 
 module.exports = options;
