@@ -13,7 +13,7 @@ let sql = {
         this.connection = MYSQL.createConnection(this.config);
         this.connection.connect((err) => {
             if (err) {
-                console.log('Error when connecting to DB: ', err);
+                console.error('Error when connecting to DB: ', err);
                 setTimeout(this.reconnect(), 2000);
             }
         })
@@ -21,7 +21,7 @@ let sql = {
             if (err.code == 'PROTOCOL_CONNECTION_LOST') {
                 this.reconnect();
             } else {
-                console.log('DB error: ', err);
+                console.error('DB error: ', err);
                 throw err;
             }
         })
@@ -43,8 +43,9 @@ let sql = {
 
     createUserConfig: function(id, options){
         return new Promise((resolve, reject) => {
+            // При изменении запроса не забудь поменять и в options
             this.connection.query('INSERT INTO usersettings (id, type0, type1, type2, type3, type4, maxprice, minprice, photo, broadcast) ' +
-            'VALUES (' + id + ', FALSE, FALSE, FALSE, FALSE, FALSE, 0, 0, FALSE, FALSE)',
+            'VALUES (' + id + ', FALSE, FALSE, FALSE, FALSE, FALSE, 200000, 0, FALSE, FALSE)',
             function(err, result, fields){
                 if(err) reject(err);
                 resolve(result);
