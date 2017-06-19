@@ -31,9 +31,18 @@ Promise.all(
 
 // Старт проверки объявлений
 function initUpdates() {
-    updates = setInterval(() => {
-        getData.loadNew().then(result => messages.send(result));
-    }, 60000);
+    // updates = setInterval(() => {
+        getData.loadNew().then(result => {
+            let allStates = states.getAllUsersStates();
+            let defaultStates = [];
+
+            Object.keys(allStates).forEach((item) => {
+                if (allStates[item] == 'default') defaultStates.push(item);
+            });
+            let opts = options.getOptionsForUsers(defaultStates);
+            // messages.send(result, opts)
+        });
+    // }, 60000);
     console.info('Updates started');
 }
 

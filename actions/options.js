@@ -273,6 +273,13 @@ let options = {
                 .catch(() => {reject()});
         })
     },
+    getOptionsForUsers: function(users) {
+        let opts = {};
+        users.forEach((item) => {
+            opts[item] = this.options[item];
+        });
+        return opts;
+    },
     getUserOptions: function(id) {
         return new Promise((resolve, reject) => {
             if (this.options[id] == undefined) reject();

@@ -71,6 +71,47 @@ let sql = {
                 else (resolve(result));
             })
         })
+    },
+
+    setLastPosts: function(posts, drop) {
+        return new Promise((resolve, reject) => {
+            if (drop) {
+                let context = this;
+                this.connection.query('DELETE FROM lastposts', function(err, result){
+                    if (err) reject(err);
+                    else context.insertLastPosts(posts)
+                        .then(() => resolve())
+                        .catch(() => reject());
+                });
+            } else {
+                this.insertLastPosts(posts)
+                    .then(() => resolve())
+                    .catch(() => reject());
+            }
+        });
+    },
+
+    insertLastPosts: function(posts) {
+        return new Promise((resolve, reject) => {
+            let requestValues = '';
+            let date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            posts.forEach((item) => {
+                requestValues += '(' + item + ', \'' + date + '\'), ';
+            });
+            this.connection.query('INSERT INTO lastposts (id, time) VALUES ' + requestValues.slice(0, requestValues.length-2), function(err, result){ 
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+    },
+
+    getLastPosts: function() {
+        return new Promise((resolve, reject) => {
+            this.connection.query('SELECT * FROM lastposts', function(err, result) {
+                if (err) reject(err);
+                resolve(result);
+            })
+        });
     }
 }
 

@@ -29,8 +29,8 @@ let messages = {
     sendKeyboardMessage: function(id, text, keyboard){
         this.app.sendMessage(id, text, {markup: keyboard});
     },
-    send: function(result) {
-
+    sendPosts: function(result, usersOptions) {
+        
     }
 }
 
